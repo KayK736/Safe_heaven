@@ -11,12 +11,11 @@ const PORT = process.env.PORT || 8079;
 // Import Middleware
 const logger = require("./middleware/KayLogger");
 
-
 // Middleware
 app.use(cors());
 app.use(express.json()); // ✅ Use Express's built-in JSON parser
 app.use(express.urlencoded({ extended: true }));
-app.use(logger);
+app.use(logger); // ✅ Logger middleware is used here
 
 // Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -36,8 +35,8 @@ mongoose.connect(URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(() => console.log("Connected to MongoDB"))
-.catch((error) => console.error("MongoDB Connection Error:", error));
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((error) => console.error("MongoDB Connection Error:", error));
 
 const connection = mongoose.connection;
 connection.once("open", () => {
