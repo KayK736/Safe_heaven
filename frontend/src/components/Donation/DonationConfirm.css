@@ -1,0 +1,58 @@
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem;
+}
+
+.confirmation-card {
+    max-width: 600px;
+    padding: 3rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.confirmation-card h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-card p {
+    color: #495057;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.status-pending {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #ffc107;
+    color: #212529;
+    border-radius: 20px;
+    margin: 1.5rem 0;
+    font-weight: 500;
+}
+
+.note {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 2rem;
+    font-style: italic;
+}

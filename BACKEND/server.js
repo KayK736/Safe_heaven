@@ -20,6 +20,8 @@ app.use(logger); // ✅ Logger middleware is used here
 // Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+
+
 // Authentication Routes
 app.use("/api/users", require("./routes/KayUserRoutes"));
 
@@ -27,14 +29,52 @@ app.use("/api/users", require("./routes/KayUserRoutes"));
 app.use("/api/caregivers", require("./routes/KayCaregiverRoutes"));
 app.use("/api/volunteers", require("./routes/KayVolunteerRoutes"));
 app.use("/api/patients", require("./routes/KayPatientRoutes"));
+app.use("/api/payments", require("./routes/KayPaymentRoutes"));
+
+// Register and Login Routes
+app.post('/register', (req, res) => {
+    // To post / insert data into database
+    const { email, password } = req.body;
+    UserLogin.findOne({ email: email })
+        .then(user => {
+            if (user) {
+                res.json("Already registered");
+            } else {
+                UserLogin.create(req.body)
+                    .then(log_reg_form => res.json(log_reg_form))
+                    .catch(err => res.json(err));
+            }
+        });
+});
+
+app.post('/login', (req, res) => {
+    // To find record from the database
+    const { email, password } = req.body;
+    UserLogin.findOne({ email: email })
+        .then(user => {
+            if (user) {
+                // If user found then these 2 cases
+                if (user.password === password) {
+                    res.json("Success");
+                } else {
+                    res.json("Wrong password");
+                }
+            }
+            // If user not found then
+            else {
+                res.json("No records found! ");
+            }
+        });
+});
 
 const URL = process.env.MONGODB_URL;
 
 // Connect to MongoDB
-mongoose.connect(URL, {
+mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log("Connected to MongoDB"))
     .catch((error) => console.error("MongoDB Connection Error:", error));
 
