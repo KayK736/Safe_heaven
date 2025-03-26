@@ -3,14 +3,35 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
-  nic: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  address: { type: String, required: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ["Donor", "Service Buyer", "Both"], required: true },
-  profilePic: { type: String }, // Store the image URL or path
-});
+  fullName:
+  { type: String, 
+    required: true },
+
+  nic: 
+  { type: String, required: 
+    true, unique: true },
+
+  email: 
+  { type: String, required: 
+    true, unique: true },
+
+  address: 
+  { type: String, 
+    required: true },
+
+  password: 
+  { type: String, 
+    required: true },
+
+  role: 
+  { type: String, 
+    enum: ["Donor", "Service Buyer", "Both"], required: true },
+
+  profilePic: 
+  { type: [String],
+    required:false,
+  } , // Store the image URL or path
+})
 
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
@@ -22,7 +43,7 @@ UserSchema.pre("save", async function (next) {
 
 // Generate JWT Token
 UserSchema.methods.getSignedJwtToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 module.exports = mongoose.model("User", UserSchema);

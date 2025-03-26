@@ -1,21 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const kayCaregiverController = require("../controllers/KayCaregiverController");  // ✅ FIXED
-const validateCaregiver = require("../middleware/KayValidation");  // ✅ FIXED
+const caregiverController = require("../controllers/KayCaregiverController");
+// ✅ Import your validation middleware
+const validateCaregiver = require("../middleware/KayValidateCaregiver");
 
-// ✅ Register a new caregiver
-router.post("/register", validateCaregiver, kayCaregiverController.registerCaregiver);
-
-// ✅ Get all caregivers
-router.get("/", kayCaregiverController.getAllCaregivers);
-
-// ✅ Get a caregiver by ID
-router.get("/:id", kayCaregiverController.getCaregiverById);
-
-// ✅ Update a caregiver by ID
-router.put("/:id", kayCaregiverController.updateCaregiver);
-
-// ✅ Delete a caregiver by ID
-router.delete("/:id", kayCaregiverController.deleteCaregiver);
+// Caregiver Routes
+router.post("/register", validateCaregiver, caregiverController.registerCaregiver);
+router.get("/", caregiverController.getAllCaregivers);
+router.get("/approved", caregiverController.getApprovedCaregivers);
+router.get("/:id", caregiverController.getCaregiverById);
+router.put("/:id", caregiverController.updateCaregiver);
+router.put("/approve/:id", caregiverController.approveCaregiver);
+router.post("/login", caregiverController.loginCaregiver);
+router.delete("/:id", caregiverController.deleteCaregiver);
 
 module.exports = router;

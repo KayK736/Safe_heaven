@@ -60,10 +60,28 @@ const KayVolunteerSchema = new mongoose.Schema({
             message: "You must accept the terms and conditions."
         }
     },
+    photo: {
+        type: String, // Stores the filename of the uploaded image
+        required: false
+    },
+    isApproved: {
+        type: Boolean,
+        default: false // Admin approval required
+    },
+    username: {
+        type: String,
+        unique: true,
+        sparse: true // Only for approved caregivers
+    },
+    password: {
+        type: String,
+        required: false // Set when approved
+    },
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
 });
 
 module.exports = mongoose.model("KayVolunteer", KayVolunteerSchema);

@@ -7,18 +7,22 @@ require("dotenv").config();
 
 // Set up storage engine for profile pictures
 const storage = multer.diskStorage({
-  destination: "./uploads/",
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads")); // Ensure path is correct
+  },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
-  }
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
 });
 
-const upload = multer({ storage }).single("profilePic");
+const upload = multer({ storage });
+
 
 // User Registration
 exports.registerUser = async (req, res) => {
-  upload(req, res, async (err) => {
+  upload.single("profilePic")(req, res, async (err) => {
     if (err) return res.status(400).json({ message: "File upload error", error: err });
+
 
     // Log request body to check if data is received
     console.log("Received Data:", req.body);
@@ -49,6 +53,57 @@ exports.registerUser = async (req, res) => {
     const token = user.getSignedJwtToken();
     res.status(201).json({ token, user });
   });
+};
+
+// Get All Users
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // Exclude password for security
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete User
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+// Update User
+exports.updateUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields
+    user.fullName = req.body.fullName || user.fullName;
+    user.nic = req.body.nic || user.nic;
+    user.email = req.body.email || user.email;
+    user.address = req.body.address || user.address;
+    user.role = req.body.role || user.role;
+
+    // If a new profile picture is uploaded
+    if (req.file) {
+      user.profilePic = req.file.path;
+    }
+
+    await user.save();
+    res.json({ message: "User updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
 };
 
 
